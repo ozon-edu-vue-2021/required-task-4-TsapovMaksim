@@ -90,6 +90,7 @@
               id="citizenship-input"
               v-model="formData.passportData.citizenship"
               list="citi"
+              @change="handleCitizenshipInput"
             />
             <datalist id="citi">
               <option
@@ -203,6 +204,7 @@
               name="gender1"
               type="radio"
               id="is-change-name-input-1"
+              @change="handleIsChangeName"
             />
             <label for="is-change-name-input-1">Нет</label>
           </div>
@@ -213,6 +215,7 @@
               name="gender1"
               type="radio"
               id="is-change-name-input-2"
+              @change="handleIsChangeName"
             />
             <label for="is-change-name-input-2">Да</label>
           </div>
@@ -247,34 +250,36 @@
 import allCitizenships from "../assets/data/citizenships.json";
 import allPasportTypes from "../assets/data/passport-types.json";
 
+const initialFormData = {
+  personalData: {
+    name: "",
+    surname: "",
+    middlename: "",
+    dateBirth: "",
+    email: "",
+    gender: "male",
+  },
+  passportData: {
+    citizenship: "Russia",
+    series: "",
+    id: "",
+    date: "",
+    romanSurname: "",
+    romanName: "",
+    countryOfIssue: "",
+    passportType: "",
+  },
+  prevSurname: "",
+  prevName: "",
+  isChangeName: false,
+};
+
 export default {
   data() {
     return {
       citizenships: allCitizenships,
       passportTypes: allPasportTypes,
-      formData: {
-        personalData: {
-          name: "",
-          surname: "",
-          middlename: "",
-          dateBirth: "",
-          email: "",
-          gender: "male",
-        },
-        passportData: {
-          citizenship: "Russia",
-          series: "",
-          id: "",
-          date: "",
-          romanSurname: "",
-          romanName: "",
-          countryOfIssue: "",
-          passportType: "",
-        },
-        prevSurname: "",
-        prevName: "",
-        isChangeName: false,
-      },
+      formData: initialFormData,
     };
   },
   computed: {
@@ -285,6 +290,25 @@ export default {
   methods: {
     handleSubmit() {
       console.log(JSON.stringify(this.formData, null, 2));
+    },
+    handleIsChangeName() {
+      if (!this.formData.isChangeName) {
+        this.formData.prevName = "";
+        this.formData.prevSurname = "";
+      }
+    },
+    handleCitizenshipInput() {
+      if (this.isRussianCitizenship) {
+        this.formData.passportData.romanSurname = "";
+        this.formData.passportData.romanName = "";
+        this.formData.passportData.countryOfIssue = "";
+        this.formData.passportData.passportType = "";
+        this.formData.passportData.id = "";
+      } else {
+        this.formData.passportData.date = "";
+        this.formData.passportData.series = "";
+        this.formData.passportData.id = "";
+      }
     },
   },
 };
